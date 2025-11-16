@@ -4,6 +4,7 @@ import org.example.model.block.Block;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+import java.util.function.BiConsumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -56,7 +57,7 @@ class BoardTest {
         }
     }
 
-    Board createFromString(String str) {
+    static Board createFromString(String str) {
         String[] lines = str.split("\n");
         for (int i = 0; i < lines.length; i++)
             lines[i] = lines[i].substring(1, lines[i].length() - 1);
@@ -71,71 +72,57 @@ class BoardTest {
 
     @Test
     void testClearRows() {
-        {
-            String boardStr = String.join("\n",
-                    "[    *]",
-                    "[    *]",
-                    "[    *]",
-                    "[    *]",
-                    "[*****]"
-            );
-            Board board = createFromString(boardStr);
-            assertEquals(boardStr, board.toString());
+        BiConsumer<String, String> clearingTester = (beforeClearing, afterClearing) -> {
+            Board board = createFromString(beforeClearing);
+            assertEquals(beforeClearing, board.toString());
 
             board.getClearedRows();
-            assertEquals(String.join("\n",
-                    "[     ]",
-                    "[    *]",
-                    "[    *]",
-                    "[    *]",
-                    "[    *]"
-            ), board.toString());
-        }
-        {
-            String boardStr = String.join("\n",
-                    "[ ****]",
-                    "[*****]",
-                    "[ ****]",
-                    "[*****]",
-                    "[ ****]"
-            );
-            Board board = createFromString(boardStr);
-            assertEquals(boardStr, board.toString());
+            assertEquals(afterClearing, board.toString());
+        };
+        clearingTester.accept(String.join("\n",
+                "[    *]",
+                "[    *]",
+                "[    *]",
+                "[    *]",
+                "[*****]"
+        ), String.join("\n",
+                "[     ]",
+                "[    *]",
+                "[    *]",
+                "[    *]",
+                "[    *]"
+        ));
 
-            board.getClearedRows();
-            assertEquals(String.join("\n",
-                    "[     ]",
-                    "[     ]",
-                    "[ ****]",
-                    "[ ****]",
-                    "[ ****]"
-            ), board.toString());
-        }
-        {
-            String boardStr = String.join("\n",
-                    "[*****]",
-                    "[**** ]",
-                    "[*****]",
-                    "[***  ]",
-                    "[*****]",
-                    "[**   ]",
-                    "[*****]",
-                    "[*    ]"
-            );
-            Board board = createFromString(boardStr);
-            assertEquals(boardStr, board.toString());
+        clearingTester.accept(String.join("\n",
+                "[ ****]",
+                "[*****]",
+                "[ ****]",
+                "[*****]",
+                "[ ****]"
+        ), String.join("\n",
+                "[     ]",
+                "[     ]",
+                "[ ****]",
+                "[ ****]",
+                "[ ****]"
+        ));
 
-            board.getClearedRows();
-            assertEquals(String.join("\n",
-                    "[     ]",
-                    "[     ]",
-                    "[     ]",
-                    "[     ]",
-                    "[**** ]",
-                    "[***  ]",
-                    "[**   ]",
-                    "[*    ]"
-            ), board.toString());
-        }
+        clearingTester.accept(String.join("\n",
+                "[**** ]",
+                "[*****]",
+                "[***  ]",
+                "[*****]",
+                "[**   ]",
+                "[*****]",
+                "[*    ]"
+        ), String.join("\n",
+                "[     ]",
+                "[     ]",
+                "[     ]",
+                "[**** ]",
+                "[***  ]",
+                "[**   ]",
+                "[*    ]"
+        ));
     }
 }

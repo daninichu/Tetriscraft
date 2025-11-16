@@ -4,6 +4,7 @@ import org.example.controller.Controller;
 import org.example.model.Board;
 import org.example.model.Model;
 import org.example.model.block.Block;
+import org.example.model.tetromino.RandomTetrominoFactory;
 
 import javax.swing.*;
 import java.awt.Color;
@@ -19,7 +20,7 @@ public class GamePanel extends JPanel{
 
     public GamePanel(){
         Board board = new Board(10, 20);
-        Model model = new Model(board);
+        Model model = new Model(board, new RandomTetrominoFactory(new String[]{"dirt", "stone", "sand"}));
         model.launch(this);
         this.model = model;
 
@@ -32,8 +33,8 @@ public class GamePanel extends JPanel{
 
         boardWidth = board.cols() * CELL_SIZE;
         boardHeight = board.rows() * CELL_SIZE;
-        boardX = dimension.width / 2 - boardWidth / 2;
-        boardY = dimension.height / 2 - boardHeight / 2;
+        boardX = (dimension.width - boardWidth) / 2;
+        boardY = (dimension.height - boardHeight) / 2;
     }
 
     @Override
@@ -43,7 +44,6 @@ public class GamePanel extends JPanel{
 
         drawBoard(g2);
 
-        g2.setColor(Color.RED);
         for(Block block : model.getBlocks()){
             drawBlock(g2, block);
         }
@@ -57,6 +57,6 @@ public class GamePanel extends JPanel{
     private void drawBlock(Graphics2D g2, Block block){
         int x = block.position.x * CELL_SIZE + boardX;
         int y = block.position.y * CELL_SIZE + boardY;
-        g2.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+        g2.drawImage(Textures.get(block.type), x, y, CELL_SIZE, CELL_SIZE, null);
     }
 }

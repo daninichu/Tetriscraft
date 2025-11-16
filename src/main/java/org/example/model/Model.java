@@ -3,8 +3,8 @@ package org.example.model;
 import org.example.model.block.Block;
 import org.example.model.block.BlockFactory;
 import org.example.model.block.FallingBlock;
-import org.example.model.tetromino.Tetromino;
 import org.example.model.tetromino.TetrominoFactory;
+import org.example.model.tetromino.Tetromino;
 import org.example.view.GamePanel;
 import org.example.view.ViewableModel;
 
@@ -13,16 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model implements ViewableModel{
-    private GameThread gameThread;
     private Board board;
-    private TetrominoFactory tetrominoFactory = new TetrominoFactory(new BlockFactory());
+    private TetrominoFactory tetrominoFactory;
+    private BlockFactory blockFactory = new BlockFactory();
     private Tetromino tetromino;
     private List<FallingBlock> fallingBlocks = new ArrayList<>();
     private int tick;
     private int score;
 
-    public Model(Board board){
+    public Model(Board board, TetrominoFactory tetrominoFactory){
         this.board = board;
+        this.tetrominoFactory = tetrominoFactory;
         spawnTetromino();
     }
 
@@ -39,13 +40,16 @@ public class Model implements ViewableModel{
     }
 
     private void spawnTetromino(){
-        tetromino = tetrominoFactory.createRandomTetromino();
+        tetromino = tetrominoFactory.createTetromino();
         tetromino.position = new Point((board.cols() - tetromino.size) / 2, 0);
         while(moveTetromino(0, -1)){}
     }
 
     public void rotateTetromino(boolean clockwise){
         tetromino.rotate(clockwise);
+        if(!validPosition(tetromino)){
+            tetromino.rotate(!clockwise);
+        }
     }
 
     public boolean softDrop(){
@@ -64,7 +68,7 @@ public class Model implements ViewableModel{
 
     private void lockTetromino(){
         for(Point cell : tetromino)
-            board.set(cell, new Block(tetromino.blockType));
+            board.set(cell, blockFactory.createBlock(tetromino.blockType));
         board.getClearedRows();
     }
 

@@ -2,15 +2,12 @@ package org.example.model.block;
 
 import java.util.HashMap;
 import java.util.NoSuchElementException;
-import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class BlockFactory {
-    static Random rand = new Random();
-    private HashMap<String, Function<String, Block>> blocks = new HashMap<>();
-
-    public BlockFactory() {
+    private static HashMap<String, Function<String, Block>> blocks = new HashMap<>();
+    static {
         Stream.of(
                 "dirt",
                 "stone"
@@ -22,8 +19,7 @@ public class BlockFactory {
         ).forEach(blockType -> blocks.put(blockType, FallingBlock::new));
     }
 
-    public Block createRandomBlock(){
-        String blockType = "sand";
+    public Block createBlock(String blockType) {
         Function<String, Block> constructor = blocks.get(blockType);
         if(constructor == null){
             throw new NoSuchElementException("No such block type: " + blockType);
