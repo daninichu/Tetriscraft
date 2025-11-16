@@ -6,7 +6,10 @@ import org.example.model.Model;
 import org.example.model.block.Block;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public class GamePanel extends JPanel{
     public static final int FPS = 60;
@@ -15,10 +18,12 @@ public class GamePanel extends JPanel{
     private final ViewableModel model;
 
     public GamePanel(){
-        Board board = new Board(20, 10);
-        model = new Model(this, board);
+        Board board = new Board(10, 20);
+        Model model = new Model(board);
+        model.launch(this);
+        this.model = model;
 
-        addKeyListener(new Controller((Model) model));
+        addKeyListener(new Controller(model));
         setFocusable(true);
 
         Dimension dimension = new Dimension(1280, 720);

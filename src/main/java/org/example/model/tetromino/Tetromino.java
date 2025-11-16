@@ -1,6 +1,6 @@
 package org.example.model.tetromino;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -94,8 +94,8 @@ public class Tetromino implements Iterable<Point> {
     @Override
     public Iterator<Point> iterator(){
         List<Point> cells = new ArrayList<>();
-        for(int row = 0; row < shape.length; row++)
-            for(int col = 0; col < shape[0].length; col++)
+        for(int row = 0; row < size; row++)
+            for(int col = 0; col < size; col++)
                 if(shape[row][col])
                     cells.add(new Point(position.x + col, position.y + row));
         return cells.iterator();

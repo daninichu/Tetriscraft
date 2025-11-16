@@ -6,7 +6,7 @@ import java.util.List;
 
 public class TNTBlock extends Block{
     public TNTBlock(Point cell, String type){
-        super(cell, type);
+        super(type);
     }
 
     public List<Point> explode(Point origin) {
