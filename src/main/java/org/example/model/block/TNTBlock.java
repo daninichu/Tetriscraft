@@ -5,6 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TNTBlock extends Block{
+    public TNTBlock(Point cell, String type){
+        super(cell, type);
+    }
+
     public List<Point> explode(Point origin) {
         return Arrays.asList(
             origin,
