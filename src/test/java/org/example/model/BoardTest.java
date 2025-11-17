@@ -3,8 +3,7 @@ package org.example.model;
 import org.example.model.block.Block;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
-import java.util.function.BiConsumer;
+import java.awt.Point;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,16 +69,17 @@ class BoardTest {
         return board;
     }
 
-    @Test
-    void testClearRows() {
-        BiConsumer<String, String> clearingTester = (beforeClearing, afterClearing) -> {
-            Board board = createFromString(beforeClearing);
-            assertEquals(beforeClearing, board.toString());
+    static void assertClearRows(String beforeClearing, String afterClearing){
+        Board board = createFromString(beforeClearing);
+        assertEquals(beforeClearing, board.toString());
 
-            board.getClearedRows();
-            assertEquals(afterClearing, board.toString());
-        };
-        clearingTester.accept(String.join("\n",
+        board.getClearedRows();
+        assertEquals(afterClearing, board.toString());
+    }
+
+    @Test
+    void testClearRows5x5() {
+        assertClearRows(String.join("\n",
                 "[    *]",
                 "[    *]",
                 "[    *]",
@@ -93,7 +93,7 @@ class BoardTest {
                 "[    *]"
         ));
 
-        clearingTester.accept(String.join("\n",
+        assertClearRows(String.join("\n",
                 "[ ****]",
                 "[*****]",
                 "[ ****]",
@@ -106,8 +106,14 @@ class BoardTest {
                 "[ ****]",
                 "[ ****]"
         ));
+    }
 
-        clearingTester.accept(String.join("\n",
+    @Test
+    void testClearRows5x10(){
+        assertClearRows(String.join("\n",
+                "[     ]",
+                "[     ]",
+                "[     ]",
                 "[**** ]",
                 "[*****]",
                 "[***  ]",
@@ -119,10 +125,112 @@ class BoardTest {
                 "[     ]",
                 "[     ]",
                 "[     ]",
+                "[     ]",
+                "[     ]",
+                "[     ]",
                 "[**** ]",
                 "[***  ]",
                 "[**   ]",
                 "[*    ]"
+        ));
+
+        assertClearRows(String.join("\n",
+                "[     ]",
+                "[     ]",
+                "[     ]",
+                "[     ]",
+                "[*    ]",
+                "[*    ]",
+                "[*    ]",
+                "[* ** ]",
+                "[*****]",
+                "[*****]"
+        ), String.join("\n",
+                "[     ]",
+                "[     ]",
+                "[     ]",
+                "[     ]",
+                "[     ]",
+                "[     ]",
+                "[*    ]",
+                "[*    ]",
+                "[*    ]",
+                "[* ** ]"
+        ));
+    }
+
+    @Test
+    void testClearRows10x10(){
+        assertClearRows(String.join("\n",
+                "[        * ]",
+                "[        **]",
+                "[        **]",
+                "[       ***]",
+                "[    * ****]",
+                "[    ******]",
+                "[    ******]",
+                "[   *******]",
+                "[**********]",
+                "[**********]"
+        ), String.join("\n",
+                "[          ]",
+                "[          ]",
+                "[        * ]",
+                "[        **]",
+                "[        **]",
+                "[       ***]",
+                "[    * ****]",
+                "[    ******]",
+                "[    ******]",
+                "[   *******]"
+        ));
+
+        assertClearRows(String.join("\n",
+                "[          ]",
+                "[          ]",
+                "[          ]",
+                "[   ****   ]",
+                "[ ******** ]",
+                "[ *********]",
+                "[******** *]",
+                "[**********]",
+                "[**********]",
+                "[**********]"
+        ), String.join("\n",
+                "[          ]",
+                "[          ]",
+                "[          ]",
+                "[          ]",
+                "[          ]",
+                "[          ]",
+                "[   ****   ]",
+                "[ ******** ]",
+                "[ *********]",
+                "[******** *]"
+        ));
+
+        assertClearRows(String.join("\n",
+                "[          ]",
+                "[          ]",
+                "[          ]",
+                "[          ]",
+                "[          ]",
+                "[*      *  ]",
+                "[**    **  ]",
+                "[********* ]",
+                "[**********]",
+                "[****** ***]"
+        ), String.join("\n",
+                "[          ]",
+                "[          ]",
+                "[          ]",
+                "[          ]",
+                "[          ]",
+                "[          ]",
+                "[*      *  ]",
+                "[**    **  ]",
+                "[********* ]",
+                "[****** ***]"
         ));
     }
 }

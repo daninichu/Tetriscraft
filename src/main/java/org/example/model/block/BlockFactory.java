@@ -10,9 +10,10 @@ public class BlockFactory {
     static {
         Stream.of(
                 "dirt",
-                "stone"
+                "stone",
+                "planks_oak",
+                "obsidian"
         ).forEach(blockType -> blocks.put(blockType, Block::new));
-
         Stream.of(
                 "sand",
                 "gravel"
@@ -21,9 +22,8 @@ public class BlockFactory {
 
     public Block createBlock(String blockType) {
         Function<String, Block> constructor = blocks.get(blockType);
-        if(constructor == null){
+        if(constructor == null)
             throw new NoSuchElementException("No such block type: " + blockType);
-        }
         return constructor.apply(blockType);
     }
 }

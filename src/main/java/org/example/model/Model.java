@@ -53,6 +53,8 @@ public class Model implements ViewableModel{
     }
 
     public boolean softDrop(){
+        System.out.println(this);
+        System.out.println();
         tick = 0;
         if(!moveTetromino(0, 1)){
             lockTetromino();
@@ -121,5 +123,26 @@ public class Model implements ViewableModel{
         for(Block block : board)
             list.add(block);
         return list;
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        List<Point> tetrominoCells = new ArrayList<>();
+        for(Point cell : tetromino){
+            tetrominoCells.add(cell);
+        }
+        for(int row = 0; row < board.rows(); row++){
+            sb.append("[");
+            for(int col = 0; col < board.cols(); col++){
+                Point cell = new Point(col, row);
+                if(tetrominoCells.contains(cell))
+                    sb.append("#");
+                else
+                    sb.append(board.get(cell) == null? " " : "*");
+            }
+            sb.append("]\n");
+        }
+        return sb.substring(0, sb.length() - 1);
     }
 }

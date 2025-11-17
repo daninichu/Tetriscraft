@@ -39,13 +39,12 @@ public class Board implements Iterable<Block> {
 
     public List<Block[]> getClearedRows(){
         List<Block[]> clearedRows = new ArrayList<>();
-        for(int row = rows() - 1; row >= 0; row--){
+        for(int row = 0; row < rows(); row++){
             if(!rowIsFull(row))
                 continue;
             Block[] blocks = new Block[cols()];
-            for(int col = 0; col < cols(); col++){
+            for(int col = 0; col < cols(); col++)
                 blocks[col] = grid[col][row];
-            }
             clearedRows.add(blocks);
 
             clearRow(row);

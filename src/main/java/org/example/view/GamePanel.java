@@ -14,13 +14,22 @@ import java.awt.Graphics2D;
 
 public class GamePanel extends JPanel{
     public static final int FPS = 60;
-    public static final int CELL_SIZE = 32;
+    public static final int BLOCK_SIZE = 32;
     private int boardX, boardY, boardWidth, boardHeight;
-    private final ViewableModel model;
+    private ViewableModel model;
 
     public GamePanel(){
         Board board = new Board(10, 20);
-        Model model = new Model(board, new RandomTetrominoFactory(new String[]{"dirt", "stone", "sand"}));
+        String[] blockTypes = new String[]{
+                "dirt",
+                "stone",
+                "stone",
+                "sand",
+                "obsidian",
+                "planks_oak",
+                "planks_oak"
+        };
+        Model model = new Model(board, new RandomTetrominoFactory(blockTypes));
         model.launch(this);
         this.model = model;
 
@@ -29,10 +38,10 @@ public class GamePanel extends JPanel{
 
         Dimension dimension = new Dimension(1280, 720);
         setPreferredSize(dimension);
-        setBackground(Color.BLACK);
+        setBackground(Color.LIGHT_GRAY);
 
-        boardWidth = board.cols() * CELL_SIZE;
-        boardHeight = board.rows() * CELL_SIZE;
+        boardWidth = board.cols() * BLOCK_SIZE;
+        boardHeight = board.rows() * BLOCK_SIZE;
         boardX = (dimension.width - boardWidth) / 2;
         boardY = (dimension.height - boardHeight) / 2;
     }
@@ -47,6 +56,7 @@ public class GamePanel extends JPanel{
         for(Block block : model.getBlocks()){
             drawBlock(g2, block);
         }
+        g2.dispose();
     }
 
     private void drawBoard(Graphics2D g2){
@@ -55,8 +65,8 @@ public class GamePanel extends JPanel{
     }
 
     private void drawBlock(Graphics2D g2, Block block){
-        int x = block.position.x * CELL_SIZE + boardX;
-        int y = block.position.y * CELL_SIZE + boardY;
-        g2.drawImage(Textures.get(block.type), x, y, CELL_SIZE, CELL_SIZE, null);
+        int x = block.position.x * BLOCK_SIZE + boardX;
+        int y = block.position.y * BLOCK_SIZE + boardY;
+        g2.drawImage(Textures.get(block.type), x, y, BLOCK_SIZE, BLOCK_SIZE, null);
     }
 }
