@@ -1,9 +1,8 @@
 package org.example.model.block;
 
-import java.awt.*;
-
 public class FallingBlock extends Block {
     public double yOffset;
+    public double velocity;
 
     public FallingBlock(String type){
         super(type);

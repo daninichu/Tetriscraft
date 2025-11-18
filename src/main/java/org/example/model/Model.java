@@ -11,6 +11,7 @@ import org.example.view.ViewableModel;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Model implements ViewableModel{
@@ -35,10 +36,37 @@ public class Model implements ViewableModel{
     }
 
     void update(){
+            updateGravity();
+        if(!fallingBlocks.isEmpty()){
+            return;
+        }
         if(tick++ < 60){
             return;
         }
         softDrop();
+    }
+
+    private void updateGravity(){
+        fallingBlocks.sort(Comparator.comparingInt((b) -> -b.position.y));
+        double gravity = 1;
+        for(FallingBlock block : fallingBlocks){
+            Point original = new Point(block.position);
+            Point below = new Point(block.position.x, block.position.y + 1);
+
+            if(!board.withinBounds(below) || board.get(below) != null){
+                block.yOffset = 0;
+                block.velocity = 0;
+                continue;
+            }
+            block.velocity = Math.min(block.velocity + gravity, 10);
+            block.yOffset += block.velocity;
+
+            if (block.yOffset >= Block.SIZE) {
+                board.set(below, block);
+                board.set(original, null);
+                block.yOffset -= Block.SIZE;
+            }
+        }
     }
 
     private void spawnTetromino(){
@@ -101,8 +129,13 @@ public class Model implements ViewableModel{
 
     private void lockTetromino(){
         for(Point cell : tetromino)
-            board.set(cell, blockFactory.createBlock(tetromino.blockType));
-        board.getClearedRows();
+            board.set(cell, new FallingBlock("sand"));
+        for(Block block : board){
+            if(block instanceof FallingBlock fallingBlock){
+                fallingBlocks.add(fallingBlock);
+            }
+        }
+//        board.getClearedRows();
     }
 
     public boolean moveTetromino(int dx, int dy){
@@ -137,7 +170,7 @@ public class Model implements ViewableModel{
     public Iterable<Block> getBlocks(){
         List<Block> list = new ArrayList<>();
         for(Point cell : tetromino){
-            Block block = blockFactory.createBlock(tetromino.blockType);
+            Block block = new FallingBlock("sand");
             block.position = cell;
             list.add(block);
         }

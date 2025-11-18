@@ -14,7 +14,6 @@ import java.awt.Graphics2D;
 
 public class GamePanel extends JPanel{
     public static final int FPS = 60;
-    public static final int BLOCK_SIZE = 32;
     private int boardX, boardY, boardWidth, boardHeight;
     private ViewableModel model;
 
@@ -32,8 +31,8 @@ public class GamePanel extends JPanel{
         setPreferredSize(dimension);
         setBackground(Color.LIGHT_GRAY);
 
-        boardWidth = board.cols()*BLOCK_SIZE;
-        boardHeight = board.rows()*BLOCK_SIZE;
+        boardWidth = board.cols()*Block.SIZE;
+        boardHeight = board.rows()*Block.SIZE;
         boardX = (dimension.width - boardWidth)/2;
         boardY = (dimension.height - boardHeight)/2;
     }
@@ -57,8 +56,8 @@ public class GamePanel extends JPanel{
     }
 
     private void drawBlock(Graphics2D g2, Block block){
-        int x = block.position.x*BLOCK_SIZE + boardX;
-        int y = block.position.y*BLOCK_SIZE + boardY;
-        g2.drawImage(Textures.get(block.type), x, y, BLOCK_SIZE, BLOCK_SIZE, null);
+        int x = boardX + block.position.x*Block.SIZE;
+        int y = boardY + block.position.y*Block.SIZE;
+        g2.drawImage(Textures.get(block.type), x, y, Block.SIZE, Block.SIZE, null);
     }
 }

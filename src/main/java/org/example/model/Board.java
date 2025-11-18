@@ -30,7 +30,9 @@ public class Board implements Iterable<Block> {
 
     public void set(Point p, Block block){
         grid[p.x][p.y] = block;
-        block.position = p;
+        if(block != null){
+            block.position = p;
+        }
     }
 
     public boolean withinBounds(Point p) {
