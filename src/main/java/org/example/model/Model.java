@@ -3,8 +3,9 @@ package org.example.model;
 import org.example.model.block.Block;
 import org.example.model.block.BlockFactory;
 import org.example.model.block.FallingBlock;
-import org.example.model.tetromino.TetrominoFactory;
+import org.example.model.block.TNTBlock;
 import org.example.model.tetromino.Tetromino;
+import org.example.model.tetromino.TetrominoFactory;
 import org.example.view.GamePanel;
 import org.example.view.ViewableModel;
 
@@ -18,7 +19,9 @@ public class Model implements ViewableModel{
     private BlockFactory blockFactory = new BlockFactory();
     private Tetromino tetromino;
     private List<FallingBlock> fallingBlocks = new ArrayList<>();
+    private List<TNTBlock> tntBlocks = new ArrayList<>();
     private int tick;
+    private int floorKickCount;
     private int score;
 
     public Model(Board board, TetrominoFactory tetrominoFactory){
@@ -32,40 +35,68 @@ public class Model implements ViewableModel{
     }
 
     void update(){
-        if(tick < 60){
-            tick++;
+        if(tick++ < 60){
             return;
         }
         softDrop();
     }
 
     private void spawnTetromino(){
+        floorKickCount = 0;
         tetromino = tetrominoFactory.createTetromino();
-        tetromino.position = new Point((board.cols() - tetromino.size) / 2, 0);
+        tetromino.position = new Point((board.cols() - tetromino.size)/2, 0);
         while(moveTetromino(0, -1)){}
     }
 
     public void rotateTetromino(boolean clockwise){
         tetromino.rotate(clockwise);
-        if(!validPosition(tetromino)){
-            tetromino.rotate(!clockwise);
+        if(validPosition(tetromino)){
+            return;
         }
+        List<Point> offsets = new ArrayList<>();
+        for(int i = 1; i <= tetromino.size/2; i++){
+            offsets.add(new Point(0, i));
+            offsets.add(new Point(clockwise? i : -i, 0));
+            offsets.add(new Point(clockwise? -i : i, 0));
+        }
+        if(wallKick(offsets)){
+            return;
+        }
+        offsets.clear();
+        for(int i = 1; i <= tetromino.size/2; i++){
+            offsets.add(new Point(0, -i));
+        }
+        if(floorKickCount < 5 && wallKick(offsets)){
+            floorKickCount++;
+            return;
+        }
+        tetromino.rotate(!clockwise);
     }
 
-    public boolean softDrop(){
-        System.out.println(this);
-        System.out.println();
+    private boolean wallKick(Iterable<Point> offsets){
+        Point original = new Point(tetromino.position);
+        for(Point offset : offsets){
+            tetromino.position.setLocation(original.x + offset.x, original.y + offset.y);
+            if(validPosition(tetromino))
+                return true;
+        }
+        tetromino.position = original;
+        return false;
+    }
+
+    public void softDrop(){
         tick = 0;
         if(!moveTetromino(0, 1)){
             lockTetromino();
             spawnTetromino();
-            return false;
         }
-        return true;
     }
 
     public void hardDrop(){
-        while(softDrop()){}
+        tick = 0;
+        while(moveTetromino(0, 1)){}
+        lockTetromino();
+        spawnTetromino();
     }
 
     private void lockTetromino(){
@@ -75,36 +106,26 @@ public class Model implements ViewableModel{
     }
 
     public boolean moveTetromino(int dx, int dy){
-        Tetromino newTetromino = new Tetromino(tetromino);
-        newTetromino.position.translate(dx, dy);
-        if(validPosition(newTetromino)){
-            tetromino = newTetromino;
+        tetromino.position.translate(dx, dy);
+        if(validPosition(tetromino))
             return true;
-        }
+        tetromino.position.translate(-dx, -dy);
         return false;
     }
 
     private boolean validPosition(Tetromino tetromino){
-        for(Point cell : tetromino){
-            if(!board.withinBounds(cell.x, cell.y))
+        for(Point cell : tetromino)
+            if(!board.withinBounds(cell) || board.get(cell) != null)
                 return false;
-            if(board.get(cell) != null)
-                return false;
-        }
         return true;
     }
 
-    private void rowsClearedScore(int rowCleared){
-        switch(rowCleared){
-            case 1 -> score += 100;
-            case 2 -> score += 300;
-            case 3 -> score += 500;
-            case 4 -> score += 800;
-        }
+    private static int rowsClearedScore(int n){
+        return 100*(1 + n*n/2);
     }
 
-    private void blocksBlownScore(int blocksBlown){
-        score += 10 * (blocksBlown - 1) * blocksBlown;
+    private static int blocksBlownScore(int n){
+        return 20*(1 + (n - 1)*n);
     }
 
     @Override
@@ -116,7 +137,7 @@ public class Model implements ViewableModel{
     public Iterable<Block> getBlocks(){
         List<Block> list = new ArrayList<>();
         for(Point cell : tetromino){
-            Block block = new Block(tetromino.blockType);
+            Block block = blockFactory.createBlock(tetromino.blockType);
             block.position = cell;
             list.add(block);
         }
@@ -127,22 +148,9 @@ public class Model implements ViewableModel{
 
     @Override
     public String toString(){
-        StringBuilder sb = new StringBuilder();
-        List<Point> tetrominoCells = new ArrayList<>();
-        for(Point cell : tetromino){
-            tetrominoCells.add(cell);
-        }
-        for(int row = 0; row < board.rows(); row++){
-            sb.append("[");
-            for(int col = 0; col < board.cols(); col++){
-                Point cell = new Point(col, row);
-                if(tetrominoCells.contains(cell))
-                    sb.append("#");
-                else
-                    sb.append(board.get(cell) == null? " " : "*");
-            }
-            sb.append("]\n");
-        }
-        return sb.substring(0, sb.length() - 1);
+        StringBuilder sb = new StringBuilder(board.toString());
+        for(Point p : tetromino)
+            sb.setCharAt(1 + p.x + p.y*(board.cols() + 3), '*');
+        return sb.toString();
     }
 }

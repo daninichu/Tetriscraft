@@ -20,11 +20,6 @@ public class Tetromino implements Iterable<Point> {
         this.blockType = blockType;
     }
 
-    public Tetromino(Tetromino t) {
-        this(t.shape, t.blockType);
-        position = new Point(t.position);
-    }
-
     public Tetromino(char shapeType, String blockType) {
         this(makeShape(shapeType), blockType);
     }
@@ -68,14 +63,6 @@ public class Tetromino implements Iterable<Point> {
             };
             default -> throw new IllegalArgumentException("Unexpected value: " + shapeType);
         };
-    }
-
-    public void moveTo(Point newPosition) {
-        position = newPosition;
-    }
-
-    public void moveBy(int dx, int dy) {
-        position = new Point(position.x + dx, position.y + dy);
     }
 
     public void rotate(boolean clockwise){

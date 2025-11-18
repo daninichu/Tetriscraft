@@ -19,11 +19,9 @@ class BoardTest {
     @Test
     void testEmpty() {
         Board board = new Board(10, 20);
-        for (int row = 0; row < board.rows(); row++){
-            assertFalse(board.rowIsFull(row));
+        for (int row = 0; row < board.rows(); row++)
             for(int col = 0; col < board.cols(); col++)
                 assertNull(board.get(new Point(col, row)));
-        }
     }
 
     @Test
@@ -32,27 +30,27 @@ class BoardTest {
         // Inside board
         for(int row = 0; row < board.rows(); row++){
             for(int col = 0; col < board.cols(); col++)
-                assertTrue(board.withinBounds(col, row));
+                assertTrue(board.withinBounds(new Point(col, row)));
         }
         // Above board
         for(int row = -board.rows(); row < 0; row++){
             for(int col = 0; col < board.cols(); col++)
-                assertFalse(board.withinBounds(col, row));
+                assertFalse(board.withinBounds(new Point(col, row)));
         }
         // Below board
         for(int row = board.rows(); row < 2 * board.rows(); row++){
             for(int col = 0; col < board.cols(); col++)
-                assertFalse(board.withinBounds(col, row));
+                assertFalse(board.withinBounds(new Point(col, row)));
         }
         // Left of board
         for(int row = 0; row < board.rows(); row++){
             for(int col = -board.cols(); col < 0; col++)
-                assertFalse(board.withinBounds(col, row));
+                assertFalse(board.withinBounds(new Point(col, row)));
         }
         // Right of board
         for(int row = 0; row < board.rows(); row++){
             for(int col = board.cols(); col < 2 * board.cols(); col++)
-                assertFalse(board.withinBounds(col, row));
+                assertFalse(board.withinBounds(new Point(col, row)));
         }
     }
 
@@ -64,7 +62,7 @@ class BoardTest {
         Board board = new Board(lines[0].length(), lines.length);
         for (int row = 0; row < board.rows(); row++)
             for(int col = 0; col < board.cols(); col++)
-                if(lines[row].charAt(col) == '*')
+                if(lines[row].charAt(col) == '#')
                     board.set(new Point(col, row), new Block(null));
         return board;
     }
@@ -80,31 +78,31 @@ class BoardTest {
     @Test
     void testClearRows5x5() {
         assertClearRows(String.join("\n",
-                "[    *]",
-                "[    *]",
-                "[    *]",
-                "[    *]",
-                "[*****]"
+                "[    #]",
+                "[    #]",
+                "[    #]",
+                "[    #]",
+                "[#####]"
         ), String.join("\n",
                 "[     ]",
-                "[    *]",
-                "[    *]",
-                "[    *]",
-                "[    *]"
+                "[    #]",
+                "[    #]",
+                "[    #]",
+                "[    #]"
         ));
 
         assertClearRows(String.join("\n",
-                "[ ****]",
-                "[*****]",
-                "[ ****]",
-                "[*****]",
-                "[ ****]"
+                "[ ####]",
+                "[#####]",
+                "[ ####]",
+                "[#####]",
+                "[ ####]"
         ), String.join("\n",
                 "[     ]",
                 "[     ]",
-                "[ ****]",
-                "[ ****]",
-                "[ ****]"
+                "[ ####]",
+                "[ ####]",
+                "[ ####]"
         ));
     }
 
@@ -114,13 +112,13 @@ class BoardTest {
                 "[     ]",
                 "[     ]",
                 "[     ]",
-                "[**** ]",
-                "[*****]",
-                "[***  ]",
-                "[*****]",
-                "[**   ]",
-                "[*****]",
-                "[*    ]"
+                "[#### ]",
+                "[#####]",
+                "[###  ]",
+                "[#####]",
+                "[##   ]",
+                "[#####]",
+                "[#    ]"
         ), String.join("\n",
                 "[     ]",
                 "[     ]",
@@ -128,10 +126,10 @@ class BoardTest {
                 "[     ]",
                 "[     ]",
                 "[     ]",
-                "[**** ]",
-                "[***  ]",
-                "[**   ]",
-                "[*    ]"
+                "[#### ]",
+                "[###  ]",
+                "[##   ]",
+                "[#    ]"
         ));
 
         assertClearRows(String.join("\n",
@@ -139,12 +137,12 @@ class BoardTest {
                 "[     ]",
                 "[     ]",
                 "[     ]",
-                "[*    ]",
-                "[*    ]",
-                "[*    ]",
-                "[* ** ]",
-                "[*****]",
-                "[*****]"
+                "[#    ]",
+                "[#    ]",
+                "[#    ]",
+                "[# ## ]",
+                "[#####]",
+                "[#####]"
         ), String.join("\n",
                 "[     ]",
                 "[     ]",
@@ -152,50 +150,50 @@ class BoardTest {
                 "[     ]",
                 "[     ]",
                 "[     ]",
-                "[*    ]",
-                "[*    ]",
-                "[*    ]",
-                "[* ** ]"
+                "[#    ]",
+                "[#    ]",
+                "[#    ]",
+                "[# ## ]"
         ));
     }
 
     @Test
     void testClearRows10x10(){
         assertClearRows(String.join("\n",
-                "[        * ]",
-                "[        **]",
-                "[        **]",
-                "[       ***]",
-                "[    * ****]",
-                "[    ******]",
-                "[    ******]",
-                "[   *******]",
-                "[**********]",
-                "[**********]"
+                "[        # ]",
+                "[        ##]",
+                "[        ##]",
+                "[       ###]",
+                "[    # ####]",
+                "[    ######]",
+                "[    ######]",
+                "[   #######]",
+                "[##########]",
+                "[##########]"
         ), String.join("\n",
                 "[          ]",
                 "[          ]",
-                "[        * ]",
-                "[        **]",
-                "[        **]",
-                "[       ***]",
-                "[    * ****]",
-                "[    ******]",
-                "[    ******]",
-                "[   *******]"
+                "[        # ]",
+                "[        ##]",
+                "[        ##]",
+                "[       ###]",
+                "[    # ####]",
+                "[    ######]",
+                "[    ######]",
+                "[   #######]"
         ));
 
         assertClearRows(String.join("\n",
                 "[          ]",
                 "[          ]",
                 "[          ]",
-                "[   ****   ]",
-                "[ ******** ]",
-                "[ *********]",
-                "[******** *]",
-                "[**********]",
-                "[**********]",
-                "[**********]"
+                "[   ####   ]",
+                "[ ######## ]",
+                "[ #########]",
+                "[######## #]",
+                "[##########]",
+                "[##########]",
+                "[##########]"
         ), String.join("\n",
                 "[          ]",
                 "[          ]",
@@ -203,10 +201,10 @@ class BoardTest {
                 "[          ]",
                 "[          ]",
                 "[          ]",
-                "[   ****   ]",
-                "[ ******** ]",
-                "[ *********]",
-                "[******** *]"
+                "[   ####   ]",
+                "[ ######## ]",
+                "[ #########]",
+                "[######## #]"
         ));
 
         assertClearRows(String.join("\n",
@@ -215,11 +213,11 @@ class BoardTest {
                 "[          ]",
                 "[          ]",
                 "[          ]",
-                "[*      *  ]",
-                "[**    **  ]",
-                "[********* ]",
-                "[**********]",
-                "[****** ***]"
+                "[#      #  ]",
+                "[##    ##  ]",
+                "[######### ]",
+                "[##########]",
+                "[###### ###]"
         ), String.join("\n",
                 "[          ]",
                 "[          ]",
@@ -227,10 +225,10 @@ class BoardTest {
                 "[          ]",
                 "[          ]",
                 "[          ]",
-                "[*      *  ]",
-                "[**    **  ]",
-                "[********* ]",
-                "[****** ***]"
+                "[#      #  ]",
+                "[##    ##  ]",
+                "[######### ]",
+                "[###### ###]"
         ));
     }
 }

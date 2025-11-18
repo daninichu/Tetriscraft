@@ -20,15 +20,7 @@ public class GamePanel extends JPanel{
 
     public GamePanel(){
         Board board = new Board(10, 20);
-        String[] blockTypes = new String[]{
-                "dirt",
-                "stone",
-                "stone",
-                "sand",
-                "obsidian",
-                "planks_oak",
-                "planks_oak"
-        };
+        String[] blockTypes = new String[]{"dirt", "stone", "stone", "sand", "obsidian", "planks_oak", "planks_oak"};
         Model model = new Model(board, new RandomTetrominoFactory(blockTypes));
         model.launch(this);
         this.model = model;
@@ -40,10 +32,10 @@ public class GamePanel extends JPanel{
         setPreferredSize(dimension);
         setBackground(Color.LIGHT_GRAY);
 
-        boardWidth = board.cols() * BLOCK_SIZE;
-        boardHeight = board.rows() * BLOCK_SIZE;
-        boardX = (dimension.width - boardWidth) / 2;
-        boardY = (dimension.height - boardHeight) / 2;
+        boardWidth = board.cols()*BLOCK_SIZE;
+        boardHeight = board.rows()*BLOCK_SIZE;
+        boardX = (dimension.width - boardWidth)/2;
+        boardY = (dimension.height - boardHeight)/2;
     }
 
     @Override
@@ -65,8 +57,8 @@ public class GamePanel extends JPanel{
     }
 
     private void drawBlock(Graphics2D g2, Block block){
-        int x = block.position.x * BLOCK_SIZE + boardX;
-        int y = block.position.y * BLOCK_SIZE + boardY;
+        int x = block.position.x*BLOCK_SIZE + boardX;
+        int y = block.position.y*BLOCK_SIZE + boardY;
         g2.drawImage(Textures.get(block.type), x, y, BLOCK_SIZE, BLOCK_SIZE, null);
     }
 }

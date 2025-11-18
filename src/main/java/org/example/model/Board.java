@@ -33,8 +33,8 @@ public class Board implements Iterable<Block> {
         block.position = p;
     }
 
-    public boolean withinBounds(int col, int row) {
-        return (col >= 0 && col < cols()) && (row >= 0 && row < rows());
+    public boolean withinBounds(Point p) {
+        return (p.x >= 0 && p.x < cols()) && (p.y >= 0 && p.y < rows());
     }
 
     public List<Block[]> getClearedRows(){
@@ -53,19 +53,19 @@ public class Board implements Iterable<Block> {
         return clearedRows;
     }
 
-    public boolean rowIsFull(int row){
+    private boolean rowIsFull(int row){
         for(int col = 0; col < cols(); col++)
             if(grid[col][row] == null)
                 return false;
         return true;
     }
 
-    public void clearRow(int row){
+    private void clearRow(int row){
         for(int col = 0; col < cols(); col++)
             grid[col][row] = null;
     }
 
-    public void shiftRows(int bottomRow){
+    private void shiftRows(int bottomRow){
         for(int row = bottomRow; row > 0; row--)
             for(int col = 0; col < cols(); col++)
                 grid[col][row] = grid[col][row - 1];
@@ -93,7 +93,7 @@ public class Board implements Iterable<Block> {
         for(int row = 0; row < rows(); row++){
             sb.append('[');
             for(int col = 0; col < cols(); col++)
-                sb.append(grid[col][row] == null? ' ' : '*');
+                sb.append(grid[col][row] == null? ' ' : '#');
             sb.append("]\n");
         }
         return sb.substring(0, sb.length() - 1);
